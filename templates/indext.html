@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Github Repo Fetcher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <!-- This script tag bootstraps PyScript -->
+    <script type="module" src="https://pyscript.net/releases/2025.8.1/core.js"></script>
+    <!-- for splashscreen -->
+    <style>
+        #loading { outline: none; border: none; background: transparent }
+    </style>
+</head>
+
+<body>
+    <section class="pyscript">
+        <div class="app-container">
+            <div class="top-bar">
+                <input type="text" id="search-input" placeholder="Search by ID...">
+                <button id="search-button" py-click="search_item">Search</button>
+            </div>
+
+            <div class="system-message" id="system-message">
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>HTML URL</th>
+                            <th>Description</th>
+                            <th>Language</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script type="py" src="{{ url_for('static',filename='main.py')}}" config="{{ url_for('static',filename='pyscript.toml')}}"></script>
+    </section>
+</body>
+</html>
