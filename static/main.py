@@ -46,7 +46,7 @@ def search_item(event):
                             else:
                                 update_message("User Updated")  
                         else:
-                            update_message("Data Empty")
+                            update_message("User Data Empty")
                     elif response.status == 404:
                         update_message("Not found")
                     else:
@@ -62,8 +62,6 @@ def search_item(event):
 
 def initial_load():
     initial_message = "System message: Please enter an username to search."
-    initial_data = []
     update_message(initial_message)
-    update_table(initial_data)
         
 initial_load()

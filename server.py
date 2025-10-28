@@ -21,16 +21,19 @@ def updateDatabase(username, response):
         df = df[df.username != username]
         df.to_csv('data.csv', index=False)
     
-    for item in response[:5]:
-        name = item.get('name', 'N/A')
-        html_url =  item.get('html_url', 'N/A')
-        description = item.get('description', 'N/A')
-        if isinstance(description, str):
-            description = description.replace(',','')
-        language =  item.get('language', 'N/A')
-        users.add(username)
-        with open('data.csv', 'a') as f:
-            f.write(f"{username},{name},{html_url},{description},{language}\n")
+    try:
+        for item in response[:5]:
+            name = item.get('name', 'N/A')
+            html_url =  item.get('html_url', 'N/A')
+            description = item.get('description', 'N/A')
+            if isinstance(description, str):
+                description = description.replace(',','')
+            language =  item.get('language', 'N/A')
+            users.add(username)
+            with open('data.csv', 'a') as f:
+                f.write(f"{username},{name},{html_url},{description},{language}\n")
+    except Exception as e:
+            print("User not found")
     return updated
 
 
