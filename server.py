@@ -6,9 +6,9 @@ import json
 from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
-users = []
+users = set()
 
-def resquestGitHubAPI(username):
+def requestGitHubAPI(username):
     response = requests.get(f"https://api.github.com/users/{username}/repos").content
     response = json.loads(response)
     return response
@@ -20,13 +20,15 @@ def updateDatabase(username, response):
         df = pd.read_csv('data.csv')
         df = df[df.username != username]
         df.to_csv('data.csv', index=False)
-
+    
     for item in response[:5]:
         name = item.get('name', 'N/A')
         html_url =  item.get('html_url', 'N/A')
         description = item.get('description', 'N/A')
+        if isinstance(description, str):
+            description = description.replace(',','')
         language =  item.get('language', 'N/A')
-        users.append(username)
+        users.add(username)
         with open('data.csv', 'a') as f:
             f.write(f"{username},{name},{html_url},{description},{language}\n")
     return updated
@@ -38,7 +40,7 @@ def home():
 
 @app.route("/<username>", methods=['GET'])
 def gitHubRequest(username):
-        response = resquestGitHubAPI(username)
+        response = requestGitHubAPI(username)
         updated = updateDatabase(username, response)
         response_envelope = {
         "data": response,
@@ -48,7 +50,7 @@ def gitHubRequest(username):
 
 def my_job():
     for x in users:
-        response = resquestGitHubAPI(x)
+        response = requestGitHubAPI(x)
         updateDatabase(x,response)
         print("Updated database", file=sys.stderr)
 
@@ -58,5 +60,5 @@ scheduler.init_app(app)
 scheduler.start()
 
 # Schedule the job to run every minute
-scheduler.add_job(id='job', func=my_job, trigger='interval', minutes=1)
+scheduler.add_job(id='job', func=my_job, trigger='interval', minutes=1, misfire_grace_time=60)
 
